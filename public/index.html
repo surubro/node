@@ -3,32 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <title>Secure Info</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; text-align: center; }
+    input { padding: 8px; width: 80%; margin-bottom: 10px; }
+    button { padding: 8px 16px; }
+    #message { margin-top: 20px; font-weight: bold; }
+  </style>
 </head>
 <body>
   <h1>Protected Access</h1>
   <input type="password" id="password" placeholder="Enter password" />
   <button onclick="checkPassword()">Submit</button>
-  <p id="message"></p>
+  <div id="message"></div>
 
   <script>
     async function checkPassword() {
       const password = document.getElementById("password").value;
-      const response = await fetch('/verify-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-
-      const result = await response.json();
       const message = document.getElementById("message");
+      message.innerText = "Checking...";
 
-      if (result.success) {
-        message.innerHTML = "<p>Access Granted: I 8591815338</p><p>S 9137267873</p>";
-      } else {
-        message.innerText = "Not Found!";
+      try {
+        const response = await fetch('/verify-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          message.innerHTML = `
+            <p>Access Granted:</p>
+            <p>I: ${result.secretData.I}</p>
+            <p>S: ${result.secretData.S}</p>
+          `;
+        } else {
+          message.innerText = "Access Denied! Incorrect password.";
+        }
+      } catch (error) {
+        message.innerText = "Error connecting to server.";
+        console.error(error);
       }
     }
   </script>
 </body>
 </html>
-

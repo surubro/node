@@ -5,28 +5,26 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies
 app.use(express.json());
-
-// Serve static files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Optional: Handle GET '/' if no index.html is present
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// POST /verify-password to check password
+// POST route to verify password and send secret data if correct
 app.post('/verify-password', (req, res) => {
   const { password } = req.body;
+
   if (password === process.env.SECRET_PASSWORD) {
-    res.json({ success: true });
+    res.json({
+      success: true,
+      secretData: {
+        I: "8591815338",
+        S: "9137267873"
+      }
+    });
   } else {
     res.json({ success: false });
   }
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

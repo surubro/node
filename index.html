@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Info</title>
+</head>
+<body>
+  <h1>Protected Access</h1>
+  <input type="password" id="password" placeholder="Enter password" />
+  <button onclick="checkPassword()">Submit</button>
+  <p id="message"></p>
+
+  <script>
+    async function checkPassword() {
+      const password = document.getElementById("password").value;
+      const response = await fetch('/verify-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const result = await response.json();
+      const message = document.getElementById("message");
+
+      if (result.success) {
+        message.innerHTML = "<p>Access Granted: I 8591815338</p><p>S 9137267873</p>";
+      } else {
+        message.innerText = "Not Found!";
+      }
+    }
+  </script>
+</body>
+</html>
